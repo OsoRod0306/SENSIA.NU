@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mi Horario</title>
+  <link href="https://fonts.googleapis.com/css2?family=Chewy&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      background: white;
+      color: black;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      background: #7a8de1;
+      color: black;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 20px;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+    }
+    .menu-icon {
+      font-size: 30px;
+      cursor: pointer;
+    }
+    .back-button {
+      font-size: 34px;
+      text-decoration: none;
+      color: black;
+    }
+    .title {
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    main {
+      flex: 1;
+      padding: 1rem;
+      overflow-y: auto;
+    }
+
+    .description {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    .materias-container {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .materia {
+      background-color: #99a1f9;
+      border-radius: 20px;
+      padding: 20px;
+      border: 3px solid #000;
+      position: relative;
+      font-size: 1.2rem;
+    }
+
+    .materia button {
+      background: none;
+      border: none;
+      position: absolute;
+      top: 10px;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    .delete-btn {
+      right: 10px;
+    }
+
+    .edit-btn {
+      right: 50px;
+    }
+
+    .fab {
+      position: fixed;
+      bottom: 90px;
+      right: 20px;
+      background-color: #606acb;
+      color: white;
+      width: 60px;
+      height: 60px;
+      font-size: 2rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+    }
+
+    .modal-content {
+      background: white;
+      border: 5px solid #606acb;
+      border-radius: 25px;
+      padding: 20px;
+      width: 90%;
+      max-width: 400px;
+    }
+
+    .modal-content h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .modal-content h3 {
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .modal-content input {
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+      border: 2px solid #000;
+      border-radius: 15px;
+      font-family: 'Chewy';
+      font-size: 1rem;
+    }
+
+    .modal-content button {
+      background-color: #606acb;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 15px;
+      font-family: 'Chewy';
+      font-size: 1.5rem;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 1rem;
+    }
+
+    footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: #7a8de1;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 10px 0;
+      z-index: 1;
+    }
+    footer a {
+      color: black;
+      text-decoration: none;
+      text-align: center;
+      font-size: 14px;
+    }
+    footer img {
+      display: block;
+      margin: 0 auto 5px;
+      width: 24px;
+      height: 24px;
+    }
+
+    @media (max-width: 500px) {
+      .materia {
+        font-size: 1rem;
+      }
+    }
+
+    .sidebar-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      z-index: 999;
+    }
+    .sidebar-overlay.active {
+      display: block;
+    }
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: -250px;
+      width: 250px;
+      height: 100%;
+      background: linear-gradient(to bottom, #7a8de1, #a5b4f2);
+      transition: left 0.3s ease;
+      padding: 20px;
+      box-sizing: border-box;
+      z-index: 1000;
+    }
+    .sidebar.active {
+      left: 0;
+    }
+    .close-btn {
+      font-size: 20px;
+      text-align: right;
+      cursor: pointer;
+    }
+    .user-icon {
+      font-size: 60px;
+      text-align: center;
+    }
+    .username {
+      text-align: center;
+      font-weight: bold;
+      margin: 10px 0;
+    }
+    .sidebar a {
+      display: block;
+      margin: 15px 0;
+      color: black;
+      text-decoration: none;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="agenda.html" class="back-button">⬅</a>
+    <div class="title">Mi Horario</div>
+    <div class="menu-icon" onclick="toggleSidebar()">☰</div>
+  </header>
+
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+  <div class="sidebar" id="sidebar">
+    <div class="close-btn" onclick="closeSidebar()">✖</div>
+    <div class="user-icon" id="sidebarAvatar">👤</div>
+    <div class="username" id="sidebarUsername">Nombre de usuario</div>
+    <a href="#" onclick="closeSidebar()">Acerca de</a>
+    <a href="#" onclick="closeSidebar()">Información Legal</a>
+  </div>
+
+  <main>
+    <div class="description">
+      <p>Aquí podrás agregar tus materias escolares apareciéndote en forma de lista, ordenándose automáticamente con la hora de las materias que tomaras</p>
+      <p id="fecha-hoy"></p>
+    </div>
+    <h2>Mis Materias</h2>
+    <div class="materias-container" id="materiasContainer"></div>
+  </main>
+
+  <div class="fab" onclick="abrirModal()">+</div>
+
+  <div class="modal" id="modal">
+    <div class="modal-content">
+      <h2>Materia</h2>
+      <input type="text" id="nombreMateria" placeholder="Agregar materia">
+      <h3>Fecha de Inicio</h3>
+      <input type="date" id="fechaInicio" placeholder="Fecha de inicio">
+      <h3>Fecha de Fin</h3>
+      <input type="date" id="fechaFin" placeholder="Fecha de fin">
+      <h3>Hora de Comienzo</h3>
+      <input type="time" id="horaInicio" placeholder="Hora de entrada">
+      Hora de Termino
+      <input type="time" id="horaFin" placeholder="Hora de salida">
+      <button onclick="guardarMateriaEditada()" id="guardarBtn">AGREGAR</button>
+    </div>
+  </div>
+
+  <footer>
+    <a href="index.html"><img src="assets/img/Iconos/house-solid.svg" alt="Inicio">Inicio</a>
+    <a href="agenda.html"><img src="assets/img/Iconos/book-solid.svg" alt="Agenda">Agenda</a>
+    <a href="#"><img src="assets/img/Iconos/list-ul-solid.svg" alt="Guía Gorila">Guía Gorila</a>
+    <a href="#"><img src="assets/img/Iconos/hand-holding-heart-solid.svg" alt="Centro de ayuda">Centro de Ayuda</a>
+    <a href="#"><img src="assets/img/Iconos/comments-solid.svg" alt="SOS">SOS</a>
+  </footer>
+
+  <script>
+    const materiasContainer = document.getElementById("materiasContainer");
+    const modal = document.getElementById("modal");
+    const nombreInput = document.getElementById("nombreMateria");
+    const fechaInicioInput = document.getElementById("fechaInicio");
+    const fechaFinInput = document.getElementById("fechaFin");
+    const horaInicioInput = document.getElementById("horaInicio");
+    const horaFinInput = document.getElementById("horaFin");
+    const guardarBtn = document.getElementById("guardarBtn");
+
+    let indiceEdicion = null;
+
+    document.getElementById("fecha-hoy").innerText =
+      new Date().toLocaleDateString("es-MX", { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+    function abrirModal(editar = false, index = null) {
+      modal.style.display = "flex";
+      if (!editar) {
+        nombreInput.value = "";
+        fechaInicioInput.value = "";
+        fechaFinInput.value = "";
+        horaInicioInput.value = "";
+        horaFinInput.value = "";
+        guardarBtn.textContent = "AGREGAR";
+        indiceEdicion = null;
+      } else {
+        const materias = JSON.parse(localStorage.getItem("materias"));
+        const m = materias[index];
+        nombreInput.value = m.nombre;
+        fechaInicioInput.value = m.fechaInicio;
+        fechaFinInput.value = m.fechaFin;
+        horaInicioInput.value = m.inicio;
+        horaFinInput.value = m.fin;
+        guardarBtn.textContent = "GUARDAR CAMBIOS";
+        indiceEdicion = index;
+      }
+    }
+
+    window.onclick = function (event) {
+      if (event.target == modal) {
+        modal.style.display = "none";
+      }
+    };
+
+    function guardarMateriaEditada() {
+      const nombre = nombreInput.value;
+      const fechaInicio = fechaInicioInput.value;
+      const fechaFin = fechaFinInput.value;
+      const inicio = horaInicioInput.value;
+      const fin = horaFinInput.value;
+
+      let materias = JSON.parse(localStorage.getItem("materias")) || [];
+
+      const materia = { nombre, fechaInicio, fechaFin, inicio, fin };
+
+      if (indiceEdicion !== null) {
+        materias[indiceEdicion] = materia;
+      } else {
+        materias.push(materia);
+      }
+
+      localStorage.setItem("materias", JSON.stringify(materias));
+      mostrarMaterias();
+      modal.style.display = "none";
+    }
+
+    function mostrarMaterias() {
+      const materias = JSON.parse(localStorage.getItem("materias")) || [];
+      const ahora = new Date();
+      const ahoraMinutos = ahora.getHours() * 60 + ahora.getMinutes();
+
+      materias.sort((a, b) => {
+        const aFinMin = parseInt(a.fin.split(":")[0]) * 60 + parseInt(a.fin.split(":")[1]);
+        const bFinMin = parseInt(b.fin.split(":")[0]) * 60 + parseInt(b.fin.split(":")[1]);
+
+        const aInicioMin = parseInt(a.inicio.split(":")[0]) * 60 + parseInt(a.inicio.split(":")[1]);
+        const bInicioMin = parseInt(b.inicio.split(":")[0]) * 60 + parseInt(b.inicio.split(":")[1]);
+
+        if (aFinMin < ahoraMinutos && bFinMin >= ahoraMinutos) return 1;
+        if (aFinMin >= ahoraMinutos && bFinMin < ahoraMinutos) return -1;
+
+        return aInicioMin - bInicioMin;
+      });
+
+      materiasContainer.innerHTML = "";
+      materias.forEach((m, index) => {
+        const div = document.createElement("div");
+        div.className = "materia";
+        div.innerHTML = `
+          <strong>${m.nombre.toUpperCase()}</strong><br>
+          Fecha de inicio: ${new Date(m.fechaInicio).toLocaleDateString("es-MX")}<br>
+          Fecha de fin: ${new Date(m.fechaFin).toLocaleDateString("es-MX")}<br>
+          Hora de entrada: ${formatTime(m.inicio)}<br>
+          Hora de salida: ${formatTime(m.fin)}
+          <button class="delete-btn" onclick="eliminarMateria(${index})">🗑️</button>
+          <button class="edit-btn" onclick="abrirModal(true, ${index})">✏️</button>
+        `;
+        materiasContainer.appendChild(div);
+      });
+    }
+
+    function formatTime(timeStr) {
+      const [hour, minute] = timeStr.split(":");
+      const h = parseInt(hour);
+      const ampm = h >= 12 ? 'pm' : 'am';
+      const formattedHour = h % 12 || 12;
+      return `${formattedHour}:${minute}${ampm}`;
+    }
+
+    function eliminarMateria(index) {
+      const materias = JSON.parse(localStorage.getItem("materias"));
+      materias.splice(index, 1);
+      localStorage.setItem("materias", JSON.stringify(materias));
+      mostrarMaterias();
+    }
+
+    mostrarMaterias();
+  </script>
+
+  <script>
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('active');
+      document.getElementById('sidebarOverlay').classList.toggle('active');
+    }
+
+    function closeSidebar() {
+      document.getElementById('sidebar').classList.remove('active');
+      document.getElementById('sidebarOverlay').classList.remove('active');
+    }
+
+    window.onload = () => {
+      const storedUsername = localStorage.getItem('username');
+      const storedAvatar = localStorage.getItem('avatar');
+      if (storedUsername && storedAvatar) {
+        document.getElementById('sidebarUsername').textContent = storedUsername;
+        document.getElementById('sidebarAvatar').innerHTML = `<img src="${storedAvatar}" style="width:60px; height:60px; border-radius:50%;">`;
+      }
+    };
+  </script>
+</body>
+</html>

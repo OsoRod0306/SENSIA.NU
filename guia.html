@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agenda - Sensia</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      background: white;
+    }
+    header {
+      background: #7a8de1;
+      color: black;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 20px;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+    }
+    .menu-icon {
+      font-size: 30px;
+      cursor: pointer;
+    }
+    .back-button {
+      font-size: 34px;
+      text-decoration: none;
+      color: black;
+    }
+    .title {
+      font-size: 24px;
+      font-weight: bold;
+    }
+    .content {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 20px;
+      padding: 20px;
+    }
+    .card {
+      background: linear-gradient(to bottom right, #7a8de1, #a5b4f2);
+      padding: 20px;
+      border-radius: 20px;
+      text-align: center;
+      font-weight: bold;
+      color: black;
+      box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
+      cursor: pointer;
+      border: 2px solid black;
+    }
+    .card img {
+      width: 50px;
+      margin-bottom: 10px;
+    }
+    footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: #7a8de1;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 10px 0;
+    }
+    footer a {
+      color: black;
+      text-decoration: none;
+      text-align: center;
+      font-size: 14px;
+    }
+    footer img {
+      display: block;
+      margin: 0 auto 5px;
+      width: 24px;
+      height: 24px;
+    }
+    .sidebar-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      z-index: 999;
+    }
+    .sidebar-overlay.active {
+      display: block;
+    }
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: -250px;
+      width: 250px;
+      height: 100%;
+      background: linear-gradient(to bottom, #7a8de1, #a5b4f2);
+      transition: left 0.3s ease;
+      padding: 20px;
+      box-sizing: border-box;
+      z-index: 1000;
+    }
+    .sidebar.active {
+      left: 0;
+    }
+    .close-btn {
+      font-size: 20px;
+      text-align: right;
+      cursor: pointer;
+    }
+    .user-icon {
+      font-size: 60px;
+      text-align: center;
+    }
+    .username {
+      text-align: center;
+      font-weight: bold;
+      margin: 10px 0;
+    }
+    .sidebar a {
+      display: block;
+      margin: 15px 0;
+      color: black;
+      text-decoration: none;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="index.html" class="back-button">⬅</a>
+    <div class="title">GUÍA GORILA</div>
+    <div class="menu-icon" onclick="toggleSidebar()">☰</div>
+  </header>
+
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+  <div class="sidebar" id="sidebar">
+    <div class="close-btn" onclick="closeSidebar()">✖</div>
+    <div class="user-icon" id="sidebarAvatar">👤</div>
+    <div class="username" id="sidebarUsername">Nombre de usuario</div>
+    <a href="#" onclick="closeSidebar()">Acerca de</a>
+    <a href="#" onclick="closeSidebar()">Información Legal</a>
+  </div>
+
+  <div class="content">
+    <div class="card" onclick="window.location.href='reglamentos.html'">
+      <img src="assets/img/iconos2/libro-de-leyes.png" alt="Lista de Tareas">
+      Reglamentos escolares
+    </div>
+    <div class="card" onclick="window.location.href='map.html'">
+      <img src="assets/img/iconos2/colombia.png" alt="Horario">
+      Mapa de la institución
+    </div>
+    <div class="card" onclick="window.location.href=''">
+      <img src="assets/img/iconos2/apoyo-tecnico.png" alt="IA">
+      Servicios de la institución
+    </div>
+    <div class="card" onclick="window.location.href=''">
+      <img src="assets/img/iconos2/seguimiento-del-tiempo.png" alt="IA">
+      Rutas de transporte
+    </div>
+  </div>
+
+  <footer>
+    <a href="index.html"><img src="assets/img/Iconos/house-solid.svg" alt="Inicio">Inicio</a>
+    <a href="agenda.html"><img src="assets/img/Iconos/book-solid.svg" alt="Agenda">Agenda</a>
+    <a href="guia.html"><img src="assets/img/Iconos/list-ul-solid.svg" alt="Guía Gorila">Guía Gorila</a>
+    <a href="#"><img src="assets/img/Iconos/hand-holding-heart-solid.svg" alt="Centro de ayuda">Centro de Ayuda</a>
+    <a href="#"><img src="assets/img/Iconos/comments-solid.svg" alt="SOS">SOS</a>
+  </footer>
+
+  <script>
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('active');
+      document.getElementById('sidebarOverlay').classList.toggle('active');
+    }
+
+    function closeSidebar() {
+      document.getElementById('sidebar').classList.remove('active');
+      document.getElementById('sidebarOverlay').classList.remove('active');
+    }
+
+    window.onload = () => {
+      const storedUsername = localStorage.getItem('username');
+      const storedAvatar = localStorage.getItem('avatar');
+      if (storedUsername && storedAvatar) {
+        document.getElementById('sidebarUsername').textContent = storedUsername;
+        document.getElementById('sidebarAvatar').innerHTML = `<img src="${storedAvatar}" style="width:60px; height:60px; border-radius:50%;">`;
+      }
+    };
+  </script>
+</body>
+</html>
